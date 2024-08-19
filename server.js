@@ -13,6 +13,7 @@ const app = express(); // create app form express
 
 // Middelewares 
 app.use(express.json());
+
 if(process.env.NODE_ENV === "development"){
     app.use(morgan("dev"));
 }

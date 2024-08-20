@@ -1,6 +1,7 @@
-const slugify = require('slugify')
-const CategoryModel = require("../models/categoryModels")
-const asyncHandler = require('express-async-handlr')
+const slugify = require('slugify');
+const CategoryModel = require("../models/categoryModels");
+const asyncHandler = require('express-async-handlr');
+const ApiError = require("../utills/apiError");;
 
 // @desc  get list of categories
 // @route get  /api/v1/categories
@@ -17,13 +18,13 @@ exports.getCategories = asyncHandler(async (req,res)=>{
 // @desc  get specific category by id 
 // @route get  /api/v1/categories/:id
 // @access pubilc
-exports.getCategory = asyncHandler(async (req,res)=>{
+exports.getCategory = asyncHandler(async (req,res,next)=>{
 const {id} = req.params;
 const category = await CategoryModel.findById(id);
-if(!category){
-  res.status(404).json({msg:` No category for this id ${id}`});
-}
-res.status(200).json({data:category});
+  if(!category){
+    return next(new ApiError(`can't find this route: ${req.originalUrl} ` , 400));
+  }
+  return  res.status(200).json({data:category});
 })
 
 // @desc  create category
@@ -38,7 +39,7 @@ exports.createCategory = asyncHandler(async (req,res)=>{
 // @desc  update specific category by id 
 // @route PUT  /api/v1/categories/:id
 // @access private
-exports.updateCategory = asyncHandler(async (req,res)=>{
+exports.updateCategory = asyncHandler(async (req,res,next)=>{
    const {id} = req.params;
    const {name} = req.body;
    
@@ -47,7 +48,21 @@ exports.updateCategory = asyncHandler(async (req,res)=>{
     {name,slug:slugify(name)},
     {new:true});
    if(!category){
-    res.status(404).json({msg:` No category for this id ${id}`});
+    return next(new ApiError(` No category for this id ${id}` , 404));
    }
    res.status(200).json({data:category});
+});
+
+
+// @desc  delete specific category by id 
+// @route delete  /api/v1/categories/:id
+// @access private
+exports.deleteCategory = asyncHandler(async (req,res,next)=>{
+  const {id} = req.params;
+
+  const category = await CategoryModel.findByIdAndDelete(id);
+  if(!category){
+    return next(new ApiError(` No category for this id ${id}` , 404));
+  }
+  res.status(204).send();
 });

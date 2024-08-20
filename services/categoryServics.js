@@ -22,16 +22,16 @@ exports.getCategory = asyncHandler(async (req,res,next)=>{
 const {id} = req.params;
 const category = await CategoryModel.findById(id);
   if(!category){
-    return next(new ApiError(`can't find this route: ${req.originalUrl} ` , 400));
+   return next(new ApiError(`No subCategory for this id: ${id}` , 404));
   }
-  return  res.status(200).json({data:category});
+     res.status(200).json({data:category});
 })
 
 // @desc  create category
 // @route post  /api/v1/categories
 // @access private 
 exports.createCategory = asyncHandler(async (req,res)=>{
-    const name = req.body.name;
+    const {name} = req.body;
     const category = await CategoryModel.create({name,slug:slugify(name)});
     res.status(201).json({data:category}); 
 });

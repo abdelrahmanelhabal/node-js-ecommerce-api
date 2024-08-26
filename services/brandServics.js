@@ -14,7 +14,6 @@ exports.getBrands = asyncHandler(async (req,res)=>{
     res.status(200).json({result:Brand.length,page:page,data:Brand});    
 })
 
-
 // @desc  get specific Brand by id 
 // @route get  /api/v1/Brands/:id
 // @access pubilc
@@ -52,7 +51,6 @@ exports.updateBrand = asyncHandler(async (req,res,next)=>{
    }
    res.status(200).json({data:Brand});
 });
-
 
 // @desc  delete specific Brand by id 
 // @route delete  /api/v1/Brand/:id

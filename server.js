@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const categoryRoutes = require('./Routes/categoryRoutes');
 const SubCategoryRoutes = require("./Routes/subCategoryRoutes");
 const brandRoutes = require("./Routes/brandsRoutes");
+const productRoutes = require("./Routes/productRoutes");
 const ApiError = require("./utills/apiError");
 const golbalError = require("./middelwares/errorMeddelware");
 // connecct with database 
@@ -27,6 +28,8 @@ if(process.env.NODE_ENV === "development"){
 app.use('/api/v1/categories',categoryRoutes);
 app.use('/api/v1/subCategories',SubCategoryRoutes);
 app.use('/api/v1/brand',brandRoutes);
+app.use('/api/v1/product',productRoutes);
+
 
 app.all('*',(req,res,next)=>{
     next(new ApiError(`can't find this route: ${req.originalUrl} ` , 400));

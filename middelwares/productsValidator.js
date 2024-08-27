@@ -44,7 +44,7 @@ exports.CreateProductValidator = [
     .withMessage("product price is required")
     .isNumeric()
     .withMessage("product price must be a number")
-    .isLength({max:22})
+    .isLength({max:2000000})
     .withMessage("To long price"),
     
     check("priceAfterDicount")

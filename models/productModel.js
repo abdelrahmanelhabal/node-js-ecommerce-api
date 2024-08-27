@@ -31,7 +31,7 @@ const productSchema = new mongoose.Schema({
     type:Number,
     require:[true,"product price is required"],
     trim:true,
-    max:[200,"Too long product price"]
+    max:[20000000,"Too long product price"]
     },
     priceAfterDicount:{
         type:Number,   

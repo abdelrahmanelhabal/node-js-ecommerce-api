@@ -1,71 +1,83 @@
-const mongoose  = require("mongoose");
+const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-    name:{
-       type:String,
-       require:true,
-       trim:true,
-       unique: [true,"product must be unique"],
-       minlenght:[3,"Too short product name"],
-       maxlenght:[70,"Too long product name"]
-     },
-    slug:{
-        type:String,
-        require:true,
-        lowercase:true,
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      require: true,
+      trim: true,
+      unique: [true, "product must be unique"],
+      minlenght: [3, "Too short product name"],
+      maxlenght: [70, "Too long product name"],
     },
-    description:{
-        type:String,
-        require:[true,"product description is required"],
-        minlenght:[3,"Too short product description"],
+    slug: {
+      type: String,
+      require: true,
+      lowercase: true,
     },
-    quantity:{
-        type:Number,
-        require:[true,"product quantity is required"],
+    description: {
+      type: String,
+      require: [true, "product description is required"],
+      minlenght: [3, "Too short product description"],
     },
-    sold:{
-    type:Number,
-    default:0,
+    quantity: {
+      type: Number,
+      require: [true, "product quantity is required"],
     },
-    price:{
-    type:Number,
-    require:[true,"product price is required"],
-    trim:true,
-    max:[20000000,"Too long product price"]
+    sold: {
+      type: Number,
+      default: 0,
     },
-    priceAfterDicount:{
-        type:Number,   
+    price: {
+      type: Number,
+      require: [true, "product price is required"],
+      trim: true,
+      max: [20000000, "Too long product price"],
     },
-    colors:String,
-    image:String,
-    imagecover:{
-        type:String,
-        require:[true,"product image cover is required"], 
+    priceAfterDicount: {
+      type: Number,
     },
-    category:{
-        type:mongoose.Schema.ObjectId,
-        ref:"category",
-        require:[true,"product must be belong to category"],
+    colors: String,
+    image: String,
+    imagecover: {
+      type: String,
+      require: [true, "product image cover is required"],
     },
-    subCategorys:[{
-        type:mongoose.Schema.ObjectId,
-        ref:"Subcategory",
-    }],
-    brand:{
-        type:mongoose.Schema.ObjectId,
-        ref:"Brand",
+    category: {
+      type: mongoose.Schema.ObjectId,
+      ref: "category",
+      require: [true, "product must be belong to category"],
     },
-    ratingAverage:{
-        type:Number,
-        min:[1,'Rating must be  above or equal 1.0'],
-        max:[5,'Rating must be  below or equal 5.0'],
+    subCategorys: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Subcategory",
+      },
+    ],
+    brand: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Brand",
     },
-    ratingquantity:{
-       type:Number,
-       default:0,
-    }
-},{timestamps:true})
+    ratingAverage: {
+      type: Number,
+      min: [1, "Rating must be  above or equal 1.0"],
+      max: [5, "Rating must be  below or equal 5.0"],
+    },
+    ratingquantity: {
+      type: Number,
+      default: 0,
+    },
+  },
+  { timestamps: true }
+);
 
+// mongoose query middleware
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name",
+  });
+  next();
+});
 
-
-module.exports = mongoose.model("product",productSchema);   
+module.exports = mongoose.model("product", productSchema);

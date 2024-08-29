@@ -88,3 +88,5 @@ The API implements a centralized error handling mechanism to ensure consistent a
 ## Validation
 
 The API includes a validation layer that checks incoming requests to ensure data integrity. This helps prevent invalid data from being processed by the server.
+
+This project was developed by [Abdelrahman Elhabal].

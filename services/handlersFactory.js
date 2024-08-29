@@ -7,10 +7,10 @@ exports.deleteOne = (model) =>
     const document = await model.findByIdAndDelete(req.params.id);
     if (!document) {
       return next(
-        new ApiError(` No subCategory for this id ${req.params.id}`, 404)
+        new ApiError(` No ${model} for this id ${req.params.id}`, 404)
       );
     }
-    res.status(204).send();
+    return res.status(204).send();
   });
 
 exports.updateOne = (model) =>
@@ -25,7 +25,7 @@ exports.updateOne = (model) =>
     );
     if (!document) {
       return next(
-        new ApiError(` No SubCategory for this id ${req.params.id}`, 404)
+        new ApiError(` No ${model} for this id ${req.params.id}`, 404)
       );
     }
     res.status(200).json({ data: document });
@@ -41,25 +41,34 @@ exports.getOne = (model) =>
   asyncHandler(async (req, res, next) => {
     const document = await model.findById(req.params.id);
     if (!document) {
-      return next(new ApiError(`No Brand for this id: ${req.params.id}`, 404));
+      return next(
+        new ApiError(`No ${model} for this id: ${req.params.id}`, 404)
+      );
     }
     res.status(200).json({ data: document });
   });
 
-exports.getList = (model) =>
-  asyncHandler(async (req, res) => {
-    const Features = new ApiFeatures(model.find(), req.query);
+exports.getList = (Model) =>
+  asyncHandler(async (req, res, next) => {
+    try {
+      const Features = new ApiFeatures(Model.find(), req.query);
 
-    Features.sort().filter().limitFields().paginate();
+      Features.sort().filter().limitFields().paginate();
 
-    const { mongoosequery, paginationresult } = Features;
+      const { mongoosequery, paginationresult } = Features;
 
-    const document = await mongoosequery;
+      const document = await mongoosequery;
 
-    res.status(200).json({
-      result: document.length,
-      page: paginationresult.page,
-      limit: paginationresult.limit,
-      data: document,
-    });
+      console.log("Sending response");
+
+      return res.status(200).json({
+        result: document.length,
+        page: paginationresult.page,
+        limit: paginationresult.limit,
+        data: document,
+      });
+    } catch (error) {
+      console.error("Error occurred:", error);
+      next(error); // Ensure errors are passed to the error-handling middleware
+    }
   });
